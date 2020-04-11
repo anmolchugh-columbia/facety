@@ -2,27 +2,6 @@
 // Created by Bhavya Gupta on 4/11/20.
 //
 
-// The contents of this file are in the public domain. See LICENSE_FOR_EXAMPLE_PROGRAMS.txt
-/*
-    This is an example illustrating the use of the deep learning tools from the dlib C++
-    Library.  In it, we will show how to do face recognition.  This example uses the
-    pretrained dlib_face_recognition_resnet_model_v1 model which is freely available from
-    the dlib web site.  This model has a 99.38% accuracy on the standard LFW face
-    recognition benchmark, which is comparable to other state-of-the-art methods for face
-    recognition as of February 2017.
-
-    In this example, we will use dlib to do face clustering.  Included in the examples
-    folder is an image, bald_guys.jpg, which contains a bunch of photos of action movie
-    stars Vin Diesel, The Rock, Jason Statham, and Bruce Willis.   We will use dlib to
-    automatically find their faces in the image and then to automatically determine how
-    many people there are (4 in this case) as well as which faces belong to each person.
-
-    Finally, this example uses a network with the loss_metric loss.  Therefore, if you want
-    to learn how to train your own models, or to get a general introduction to this loss
-    layer, you should read the dnn_metric_learning_ex.cpp and
-    dnn_metric_learning_on_images_ex.cpp examples.
-*/
-
 #include <dlib/dnn.h>
 #include <dlib/gui_widgets.h>
 #include <dlib/clustering.h>
@@ -34,19 +13,6 @@ using namespace dlib;
 using namespace std;
 
 // ----------------------------------------------------------------------------------------
-
-// The next bit of code defines a ResNet network.  It's basically copied
-// and pasted from the dnn_imagenet_ex.cpp example, except we replaced the loss
-// layer with loss_metric and made the network somewhat smaller.  Go read the introductory
-// dlib DNN examples to learn what all this stuff means.
-//
-// Also, the dnn_metric_learning_on_images_ex.cpp example shows how to train this network.
-// The dlib_face_recognition_resnet_model_v1 model used by this example was trained using
-// essentially the code shown in dnn_metric_learning_on_images_ex.cpp except the
-// mini-batches were made larger (35x15 instead of 5x5), the iterations without progress
-// was set to 10000, and the training dataset consisted of about 3 million images instead of
-// 55.  Also, the input layer was locked to images of size 150.
-template <template <int,template<typename>class,int,typename> class block, int N, template<typename>class BN, typename SUBNET>
 using residual = add_prev1<block<N,BN,1,tag1<SUBNET>>>;
 
 template <template <int,template<typename>class,int,typename> class block, int N, template<typename>class BN, typename SUBNET>
@@ -82,7 +48,7 @@ std::vector<matrix<rgb_pixel>> jitter_image(
 
 // ----------------------------------------------------------------------------------------
 
-int main(int argc, char** argv) try
+int getFaces(int argc, char** argv) try
 {
     if (argc < 2)
     {
@@ -238,10 +204,12 @@ int main(int argc, char** argv) try
 
     cout << "hit enter to terminate" << endl;
     cin.get();
+    return 0;
 }
 catch (std::exception& e)
 {
     cout << e.what() << endl;
+    return 0;
 }
 
 // ----------------------------------------------------------------------------------------
