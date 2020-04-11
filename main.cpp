@@ -1,7 +1,7 @@
 #include <iostream>
 #include "src/FileExplorer/header/ImageIterator.h"
 #include<unordered_map>
-#include "src/faceRec/header/faceClustering.h"
+#include "src/FaceRec/header/faceClustering.h"
 
 int main() {
     const std::filesystem::path path = "/Users/bhavyagupta/Documents/Columbia/sem2/design using c++/project/facety/src/Resources/Faces";
