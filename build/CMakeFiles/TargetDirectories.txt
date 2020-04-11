@@ -1,0 +1,8 @@
+/Users/mansikhemka/Desktop/facety/build/CMakeFiles/rebuild_cache.dir
+/Users/mansikhemka/Desktop/facety/build/CMakeFiles/edit_cache.dir
+/Users/mansikhemka/Desktop/facety/build/CMakeFiles/facety.dir
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-build/CMakeFiles/rebuild_cache.dir
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-build/CMakeFiles/edit_cache.dir
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-build/dlib/CMakeFiles/rebuild_cache.dir
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-build/dlib/CMakeFiles/edit_cache.dir
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-build/dlib/CMakeFiles/dlib.dir

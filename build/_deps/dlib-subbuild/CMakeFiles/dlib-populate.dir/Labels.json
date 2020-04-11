@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/CMakeFiles/dlib-populate"
+		},
+		{
+			"file" : "/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/CMakeFiles/dlib-populate.rule"
+		},
+		{
+			"file" : "/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/CMakeFiles/dlib-populate-complete.rule"
+		},
+		{
+			"file" : "/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-install.rule"
+		},
+		{
+			"file" : "/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-mkdir.rule"
+		},
+		{
+			"file" : "/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-download.rule"
+		},
+		{
+			"file" : "/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-update.rule"
+		},
+		{
+			"file" : "/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-patch.rule"
+		},
+		{
+			"file" : "/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-configure.rule"
+		},
+		{
+			"file" : "/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-build.rule"
+		},
+		{
+			"file" : "/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"dlib-populate"
+		],
+		"name" : "dlib-populate"
+	}
+}

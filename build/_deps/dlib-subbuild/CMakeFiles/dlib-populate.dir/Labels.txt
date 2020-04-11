@@ -1,0 +1,14 @@
+# Target labels
+ dlib-populate
+# Source files and their labels
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/CMakeFiles/dlib-populate
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/CMakeFiles/dlib-populate.rule
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/CMakeFiles/dlib-populate-complete.rule
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-install.rule
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-mkdir.rule
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-download.rule
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-update.rule
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-patch.rule
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-configure.rule
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-build.rule
+/Users/mansikhemka/Desktop/facety/build/_deps/dlib-subbuild/dlib-populate-prefix/src/dlib-populate-stamp/dlib-populate-test.rule

@@ -2,7 +2,7 @@
 #include "src/FileExplorer/header/ImageIterator.h"
 
 int main() {
-    const std::filesystem::path path = "/Users/anmol/Documents/2nd_semester/C++";
+    const std::filesystem::path path = "/Users/mansikhemka/Desktop/images";
     vector<string> images;
     try {
         images = list_all_images(path);
