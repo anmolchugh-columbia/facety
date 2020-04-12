@@ -10,7 +10,16 @@ FetchContent_MakeAvailable(dlib)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(facety main.cpp src/FileExplorer/source/ImageIterator.cpp src/FileExplorer/header/ImageIterator.h tests/has_filesystem.cc src/Utilities/source/ImageUtilities.cpp src/Utilities/header/ImageUtilities.h)
+add_executable(facety
+        main.cpp
+        src/FileExplorer/source/ImageIterator.cpp
+        src/FileExplorer/header/ImageIterator.h
+        tests/has_filesystem.cc
+        src/Utilities/source/ImageUtilities.cpp
+        src/Utilities/header/ImageUtilities.h
+        src/FaceRec/header/faceClustering.h
+        src/FaceRec/source/faceClustering.cpp
+        src/FileExplorer/source/ImageOrganizer.cpp src/FileExplorer/header/ImageOrganizer.h src/Utilities/header/Constants.h)
 target_link_libraries(facety stdc++fs)
 
 target_link_libraries(facety dlib::dlib)

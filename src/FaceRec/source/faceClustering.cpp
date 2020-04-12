@@ -8,6 +8,8 @@
 #include <dlib/string.h>
 #include <dlib/image_io.h>
 #include <dlib/image_processing/frontal_face_detector.h>
+#include <filesystem>
+#include "../../Utilities/header/Constants.h"
 
 using namespace dlib;
 using namespace std;
@@ -63,10 +65,16 @@ std::unordered_map<int, std::vector<string>> getFaces(std::vector<string> imageP
     frontal_face_detector detector = get_frontal_face_detector();
     // We will also use a face landmarking model to align faces to a standard pose:  (see face_landmark_detection_ex.cpp for an introduction)
     shape_predictor sp;
-    deserialize("/Users/bhavyagupta/Documents/Columbia/sem2/design using c++/project/facety/src/FaceRec/source/shape_predictor_5_face_landmarks.dat") >> sp;
+    Constants fileConstants = Constants::getInstance();
+    filesystem::path models = fileConstants.project_directory / "resources/model";
+    string resources_path_string(models.c_str());
+
+    string current_path(filesystem::current_path().c_str());
+
+    deserialize( resources_path_string + "/shape_predictor_5_face_landmarks.dat") >> sp;
     // And finally we load the DNN responsible for face recognition.
     anet_type net;
-    deserialize("/Users/bhavyagupta/Documents/Columbia/sem2/design using c++/project/facety/src/FaceRec/source/dlib_face_recognition_resnet_model_v1.dat") >> net;
+    deserialize(resources_path_string + "/dlib_face_recognition_resnet_model_v1.dat") >> net;
 
 
     image_window win;
