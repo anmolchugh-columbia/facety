@@ -14,5 +14,5 @@
 using namespace dlib;
 using namespace std;
 
-std::unordered_map<int, std::vector<string>> getFaces(std::vector<string> imagePaths);
+std::unordered_map<int, std::vector<string>> clustering(std::vector<string> imagePaths);
 #endif //FACETY_FACECLUSTERING_H
