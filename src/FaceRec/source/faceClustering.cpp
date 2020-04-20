@@ -1,5 +1,5 @@
 //
-// Created by Bhavya Gupta on 4/14/20.
+// Created by Bhavya Gupta on 4/19/20.
 //
 
 #include <dlib/dnn.h>
@@ -10,6 +10,7 @@
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <filesystem>
 #include "../../Utilities/header/Constants.h"
+#include <opencv2/opencv.hpp>
 
 using namespace dlib;
 using namespace std;
@@ -68,7 +69,7 @@ std::unordered_map<int, std::vector<string>> getClusters(
 // model1 : "http://dlib.net/files/shape_predictor_5_face_landmarks.dat.bz2"
 // model2 : "http://dlib.net/files/dlib_face_recognition_resnet_model_v1.dat.bz2"
 
-std::unordered_map<int, std::vector<string>> clustering(std::vector<string> imagePaths) try
+std::unordered_map<int, std::vector<string>> clustering(std::vector<string>& imagePaths) try
 {
 
 
@@ -81,12 +82,12 @@ std::unordered_map<int, std::vector<string>> clustering(std::vector<string> imag
 
     getFaces(resources_path_string, faceID, faces, imagePaths);
 
-    if (faces.size() == 0)
+    if (faces.empty())
     {
         cout << "No faces found in image!" << endl;
         return {};
     }
-
+    cout<<"faces detected "<<endl;
     return getClusters(resources_path_string, faceID, faces, imagePaths);
 }
 catch (std::exception& e)
@@ -116,12 +117,12 @@ std::vector<matrix<rgb_pixel>> jitter_image(
 }
 
 // ----------------------------------------------------------------------------------------
-void getFaces(string resources_path_string, std::vector<int>& faceID, std::vector<matrix<rgb_pixel>>& faces, const std::vector<string>& imagePaths){
+void getFaces(const string& resources_path_string, std::vector<int>& faceID, std::vector<matrix<rgb_pixel>>& faces, const std::vector<string>& imagePaths){
 
     frontal_face_detector detector = get_frontal_face_detector();
     shape_predictor sp;
     deserialize( resources_path_string + "/shape_predictor_5_face_landmarks.dat") >> sp;
-    for (int i = 0; i < imagePaths.size(); i++)
+    for (size_t i = 0; i < imagePaths.size(); i++)
     {
         matrix<rgb_pixel> img;
         load_image(img, imagePaths[i]);
@@ -140,7 +141,7 @@ void getFaces(string resources_path_string, std::vector<int>& faceID, std::vecto
 }
 
 // ----------------------------------------------------------------------------------------
-std::unordered_map<int, std::vector<string>> getClusters(string resources_path_string, std::vector<int>& faceID, std::vector<matrix<rgb_pixel>>& faces, const std::vector<string>& imagePaths ){
+std::unordered_map<int, std::vector<string>> getClusters(const string& resources_path_string, std::vector<int>& faceID, std::vector<matrix<rgb_pixel>>& faces, const std::vector<string>& imagePaths ){
 
     anet_type net;
     deserialize(resources_path_string + "/dlib_face_recognition_resnet_model_v1.dat") >> net;
@@ -160,7 +161,7 @@ std::unordered_map<int, std::vector<string>> getClusters(string resources_path_s
 
     // Now let's display the face clustering results on the screen.  You will see that it
     // correctly grouped all the faces.
-
+    Constants fileConstants = Constants::getInstance();
     std::unordered_map<int, std::vector<string>> clusters;
     for (size_t cluster_id = 0; cluster_id < num_clusters; ++cluster_id)
     {
@@ -173,8 +174,9 @@ std::unordered_map<int, std::vector<string>> getClusters(string resources_path_s
                     imageID++;
                 }
                 clusters[cluster_id].push_back(imagePaths[imageID]);
+                string relative = "resources/clusters/" + to_string(cluster_id) + ".jpg";
+                cv::imwrite(fileConstants.project_directory / relative, faces[j]);
             }
-
         }
     }
     return clusters;

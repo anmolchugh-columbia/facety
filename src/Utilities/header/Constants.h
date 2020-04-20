@@ -18,11 +18,11 @@ public:
         return instance;
     }
 private:
-    filesystem::path relative_images = "resources/faces";
-    filesystem::path relative_clusters = "resources/clusters";
+    filesystem::path relative_images = "resources/faces3";
+    filesystem::path relative_clusters = "resources/clusters/faces3";
     Constants(){
-        relative_images = "resources/faces";
-        relative_clusters = "resources/clusters";
+        relative_images = "resources/faces3";
+        relative_clusters = "resources/clusters/faces3";
         project_directory = filesystem::current_path().parent_path();
         images_directory = project_directory / relative_images;
         clusters_directory = project_directory / relative_clusters;
