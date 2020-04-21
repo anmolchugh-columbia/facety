@@ -230,7 +230,7 @@ std::unordered_map<int, std::vector<string>> getClusters(string resources_path_s
     createClusterDirectories(fileConstants.clusters_directory, num_clusters);
 
     // Lets make the clusters for old faces first
-    for(int i=0; i<oldFacePaths.size(); i++){
+    for(size_t i=0; i<oldFacePaths.size(); i++){
         int cluster_id = labels[oldFaceCurrentIndex];
         doneClusterIDs.insert(cluster_id);
 
@@ -252,10 +252,10 @@ std::unordered_map<int, std::vector<string>> getClusters(string resources_path_s
 
     for (size_t cluster_id = 0; cluster_id < num_clusters; ++cluster_id)
     {
-        bool flag = 0;
+        bool flag = false;
         if (doneClusterIDs.find(cluster_id)==doneClusterIDs.end()){
             int imageID = 0, sum = 0;
-            int end = oldFaceStartIndex==-1?labels.size():oldFaceStartIndex;
+            unsigned int end = oldFaceStartIndex==-1?labels.size():oldFaceStartIndex;
             for (size_t j = 0; j < end; ++j)
             {
                 if (cluster_id == labels[j]){
@@ -265,7 +265,7 @@ std::unordered_map<int, std::vector<string>> getClusters(string resources_path_s
                     }
                     clusters[global_cluster_count].push_back(imagePaths[imageID]);
                     if(!flag) {
-                        flag = 1;
+                        flag = true;
                         string relative = "resources/clusters/" + to_string(global_cluster_count) + "/" +
                                           to_string(global_cluster_count) + ".png";
                         save_png(faces[j], fileConstants.project_directory / relative);
