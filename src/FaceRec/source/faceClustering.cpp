@@ -160,7 +160,7 @@ std::unordered_map<int, std::vector<string>> getClusters(string resources_path_s
 
     // Now let's display the face clustering results on the screen.  You will see that it
     // correctly grouped all the faces.
-
+    Constants fileConstants = Constants::getInstance();
     std::unordered_map<int, std::vector<string>> clusters;
     for (size_t cluster_id = 0; cluster_id < num_clusters; ++cluster_id)
     {
@@ -173,6 +173,8 @@ std::unordered_map<int, std::vector<string>> getClusters(string resources_path_s
                     imageID++;
                 }
                 clusters[cluster_id].push_back(imagePaths[imageID]);
+                string relative = "resources/clusters/" + to_string(cluster_id) + ".jpg";
+                save_png(faces[j], fileConstants.project_directory / relative);
             }
 
         }
