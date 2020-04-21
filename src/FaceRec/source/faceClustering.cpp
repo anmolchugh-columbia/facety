@@ -11,6 +11,7 @@
 #include "../../FileExplorer/header/directoryIterator.h"
 #include "../../FileExplorer/header/makeClusterDirectories.h"
 #include <unordered_set>
+#include <chrono>
 
 
 using namespace dlib;
@@ -151,7 +152,7 @@ int getOldFaces(const string& resources_path_string, std::vector<int>& faceID, s
     for (size_t i = 0; i < directoryPaths.size(); i++)
     {
         string imageName = "";
-        for(int j=directoryPaths[i].size()-1; j>=0 && directoryPaths[i][j]!='/'; j--)
+        for(size_t j=directoryPaths[i].size()-1; j>=0 && directoryPaths[i][j]!='/'; j--)
             imageName = imageName+directoryPaths[i][j];
         reverse(imageName.begin(), imageName.end());
         imageName = imageName+".png";
@@ -179,13 +180,15 @@ void getFaces(string resources_path_string, std::vector<int>& faceID, std::vecto
     frontal_face_detector detector = get_frontal_face_detector();
     shape_predictor sp;
     deserialize( resources_path_string + "/shape_predictor_5_face_landmarks.dat") >> sp;
-    for (int i = 0; i < imagePaths.size(); i++)
+    for (size_t i = 0; i < imagePaths.size(); i++)
     {
+        auto start = chrono::high_resolution_clock::now();
+
         matrix<rgb_pixel> img;
         load_image(img, imagePaths[i]);
 
-        while(img.size() < 1800*1800)
-            pyramid_up(img);
+//        while(img.size() < 1800*1800)
+//            pyramid_up(img);
 
         for (auto face : detector(img)) {
             auto shape = sp(img, face);
@@ -194,7 +197,13 @@ void getFaces(string resources_path_string, std::vector<int>& faceID, std::vecto
             faces.push_back(move(face_chip));
             faceID[i]++;
         }
+
+        auto stop = chrono::high_resolution_clock::now();
+        auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+        cout <<"time taken to detect faces in  "<< imagePaths[i]<< " : "<<duration.count()/1000000<< endl;
     }
+
+
 }
 
 // ----------------------------------------------------------------------------------------
