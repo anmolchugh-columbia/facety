@@ -12,6 +12,6 @@
 
 using namespace std;
 
-void createClusterDirectories(filesystem::path parentDirectory, std::unordered_map<int, std::vector<string>> clusters);
+void populateClusters(filesystem::path parentDirectory, std::unordered_map<int, std::vector<string>> clusters);
 
 #endif //FACETY_IMAGEORGANIZER_H

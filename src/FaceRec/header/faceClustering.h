@@ -5,11 +5,13 @@
 #ifndef FACETY_FACECLUSTERING_H
 #define FACETY_FACECLUSTERING_H
 #include <dlib/dnn.h>
-#include <dlib/gui_widgets.h>
 #include <dlib/clustering.h>
-#include <dlib/string.h>
 #include <dlib/image_io.h>
 #include <dlib/image_processing/frontal_face_detector.h>
+#include <filesystem>
+#include "../../Utilities/header/Constants.h"
+#include "../../FileExplorer/header/directoryIterator.h"
+#include <unordered_set>
 
 using namespace dlib;
 using namespace std;

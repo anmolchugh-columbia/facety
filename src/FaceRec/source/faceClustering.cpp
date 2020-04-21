@@ -3,13 +3,15 @@
 //
 
 #include <dlib/dnn.h>
-#include <dlib/gui_widgets.h>
 #include <dlib/clustering.h>
-#include <dlib/string.h>
 #include <dlib/image_io.h>
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <filesystem>
 #include "../../Utilities/header/Constants.h"
+#include "../../FileExplorer/header/directoryIterator.h"
+#include "../../FileExplorer/header/makeClusterDirectories.h"
+#include <unordered_set>
+
 
 using namespace dlib;
 using namespace std;
@@ -56,11 +58,23 @@ void getFaces(
         const std::vector<string>& imagePaths
 );
 
+int getOldFaces(
+        const string& resources_path_string,
+        std::vector<int>& faceID,
+        std::vector<matrix<rgb_pixel>>& faces,
+        const filesystem::path& path_to_existing_clusters,
+        int oldFaceStartIndex,
+        std::vector<string>& oldFacePaths,
+        std::vector<string>& imagePaths
+);
+
 std::unordered_map<int, std::vector<string>> getClusters(
         string resources_path_string,
         std::vector<int>& faceID,
         std::vector<matrix<rgb_pixel>>& faces,
-        const std::vector<string>& imagePaths
+        const std::vector<string>& imagePaths,
+        int oldFaceStartIndex,
+        std::vector<string>& oldFacePaths
 );
 
 // ----------------------------------------------------------------------------------------
@@ -75,19 +89,24 @@ std::unordered_map<int, std::vector<string>> clustering(std::vector<string> imag
     Constants fileConstants = Constants::getInstance();
     filesystem::path models = fileConstants.project_directory / "resources/model";
     string resources_path_string(models.c_str());
+    filesystem::path path_to_existing_clusters = fileConstants.project_directory / "resources/clusters";
 
     std::vector<int> faceID(imagePaths.size(), 0);
     std::vector<matrix<rgb_pixel>> faces;
+    int oldFaceStartIndex = -1;
+    std::vector<string> oldFacePaths;
 
     getFaces(resources_path_string, faceID, faces, imagePaths);
 
-    if (faces.size() == 0)
+    oldFaceStartIndex = getOldFaces(resources_path_string, faceID, faces, path_to_existing_clusters, oldFaceStartIndex, oldFacePaths ,imagePaths);
+
+    if (faces.empty())
     {
         cout << "No faces found in image!" << endl;
         return {};
     }
-
-    return getClusters(resources_path_string, faceID, faces, imagePaths);
+    cout<<"faces detected "<<endl;
+    return getClusters(resources_path_string, faceID, faces, imagePaths,  oldFaceStartIndex, oldFacePaths);
 }
 catch (std::exception& e)
 {
@@ -116,6 +135,45 @@ std::vector<matrix<rgb_pixel>> jitter_image(
 }
 
 // ----------------------------------------------------------------------------------------
+
+int getOldFaces(const string& resources_path_string, std::vector<int>& faceID, std::vector<matrix<rgb_pixel>>& faces, const filesystem::path& path_to_existing_clusters,
+                 int oldFaceStartIndex, std::vector<string>& oldFacePaths, std::vector<string>& imagePaths){
+
+    frontal_face_detector detector = get_frontal_face_detector();
+    shape_predictor sp;
+    deserialize( resources_path_string + "/shape_predictor_5_face_landmarks.dat") >> sp;
+
+    std::vector<string> directoryPaths = list_all_directories(path_to_existing_clusters);
+
+    if(!directoryPaths.empty())
+        oldFaceStartIndex = faces.size();
+
+    for (size_t i = 0; i < directoryPaths.size(); i++)
+    {
+        string imageName = "";
+        for(int j=directoryPaths[i].size()-1; j>=0 && directoryPaths[i][j]!='/'; j--)
+            imageName = imageName+directoryPaths[i][j];
+        reverse(imageName.begin(), imageName.end());
+        imageName = imageName+".png";
+        string imagePath = directoryPaths[i] + "/" + imageName;
+        oldFacePaths.emplace_back(imagePath);
+
+
+        matrix<rgb_pixel> img;
+        load_image(img, imagePath);
+        for (auto face : detector(img)) {
+            auto shape = sp(img, face);
+            matrix<rgb_pixel> face_chip;
+            extract_image_chip(img, get_face_chip_details(shape, 150, 0.25), face_chip);
+            faces.push_back(move(face_chip));
+            faceID[i]++;
+        }
+    }
+
+    return oldFaceStartIndex;
+}
+
+// ----------------------------------------------------------------------------------------
 void getFaces(string resources_path_string, std::vector<int>& faceID, std::vector<matrix<rgb_pixel>>& faces, const std::vector<string>& imagePaths){
 
     frontal_face_detector detector = get_frontal_face_detector();
@@ -140,7 +198,7 @@ void getFaces(string resources_path_string, std::vector<int>& faceID, std::vecto
 }
 
 // ----------------------------------------------------------------------------------------
-std::unordered_map<int, std::vector<string>> getClusters(string resources_path_string, std::vector<int>& faceID, std::vector<matrix<rgb_pixel>>& faces, const std::vector<string>& imagePaths ){
+std::unordered_map<int, std::vector<string>> getClusters(string resources_path_string, std::vector<int>& faceID, std::vector<matrix<rgb_pixel>>& faces, const std::vector<string>& imagePaths,  int oldFaceStartIndex, std::vector<string>& oldFacePaths ){
 
     anet_type net;
     deserialize(resources_path_string + "/dlib_face_recognition_resnet_model_v1.dat") >> net;
@@ -156,30 +214,70 @@ std::unordered_map<int, std::vector<string>> getClusters(string resources_path_s
         }
     }
     std::vector<unsigned long> labels;
-    const auto num_clusters = chinese_whispers(edges, labels);
+    const unsigned long num_clusters = chinese_whispers(edges, labels);
 
     // Now let's display the face clustering results on the screen.  You will see that it
     // correctly grouped all the faces.
     Constants fileConstants = Constants::getInstance();
     std::unordered_map<int, std::vector<string>> clusters;
-    for (size_t cluster_id = 0; cluster_id < num_clusters; ++cluster_id)
-    {
+
+    int global_cluster_count = 0;
+    std::unordered_set<int> doneClusterIDs;
+
+    int oldFaceCurrentIndex = oldFaceStartIndex;
+
+    //Lets make some cluster directories
+    createClusterDirectories(fileConstants.clusters_directory, num_clusters);
+
+    // Lets make the clusters for old faces first
+    for(int i=0; i<oldFacePaths.size(); i++){
+        int cluster_id = labels[oldFaceCurrentIndex];
+        doneClusterIDs.insert(cluster_id);
+
         int imageID = 0, sum = 0;
-        for (size_t j = 0; j < labels.size(); ++j)
+        for (size_t j = 0; j < oldFaceStartIndex; ++j)
         {
             if (cluster_id == labels[j]){
                 while(faceID[imageID]==0 || j>=faceID[imageID] + sum) {
                     sum += faceID[imageID];
                     imageID++;
                 }
-                clusters[cluster_id].push_back(imagePaths[imageID]);
-                string relative = "resources/clusters/" + to_string(cluster_id) + ".jpg";
-                save_png(faces[j], fileConstants.project_directory / relative);
+                clusters[global_cluster_count].push_back(imagePaths[imageID]);
             }
+        }
+        oldFaceCurrentIndex++;
 
+    }
+    global_cluster_count = oldFacePaths.size();
+
+    for (size_t cluster_id = 0; cluster_id < num_clusters; ++cluster_id)
+    {
+        bool flag = 0;
+        if (doneClusterIDs.find(cluster_id)==doneClusterIDs.end()){
+            int imageID = 0, sum = 0;
+            int end = oldFaceStartIndex==-1?labels.size():oldFaceStartIndex;
+            for (size_t j = 0; j < end; ++j)
+            {
+                if (cluster_id == labels[j]){
+                    while(faceID[imageID]==0 || j>=faceID[imageID] + sum) {
+                        sum += faceID[imageID];
+                        imageID++;
+                    }
+                    clusters[global_cluster_count].push_back(imagePaths[imageID]);
+                    if(!flag) {
+                        flag = 1;
+                        string relative = "resources/clusters/" + to_string(global_cluster_count) + "/" +
+                                          to_string(global_cluster_count) + ".png";
+                        save_png(faces[j], fileConstants.project_directory / relative);
+                    }
+                }
+            }
+            doneClusterIDs.insert(cluster_id);
+            global_cluster_count+=1;
         }
     }
     return clusters;
+
 }
 
 

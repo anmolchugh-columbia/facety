@@ -21,7 +21,7 @@ unordered_set<string> getClusterNames(std::unordered_map<int, vector<string>> cl
     return clusterNames;
 }
 
-void createClusterDirectories(filesystem::path parentDirectory, std::unordered_map<int, vector<string>> clusters){
+void populateClusters(filesystem::path parentDirectory, std::unordered_map<int, vector<string>> clusters){
     unordered_set<string> clusterNames = getClusterNames(clusters);
     for(string clusterName : clusterNames){
         filesystem::path galleryPath = parentDirectory;
@@ -29,7 +29,7 @@ void createClusterDirectories(filesystem::path parentDirectory, std::unordered_m
         filesystem::path directory = galleryPath;
         galleryPath += "/";
         galleryPath += clusterName;
-        filesystem::create_directory(galleryPath);
+//        filesystem::create_directory(galleryPath);
         copyImagesToGalleryCluster(galleryPath, clusters[stoi(clusterName)]);
     }
 }

@@ -19,7 +19,13 @@ add_executable(facety
         src/Utilities/header/ImageUtilities.h
         src/FaceRec/header/faceClustering.h
         src/FaceRec/source/faceClustering.cpp
-        src/FileExplorer/source/ImageOrganizer.cpp src/FileExplorer/header/ImageOrganizer.h src/Utilities/header/Constants.h)
+        src/FileExplorer/source/ImageOrganizer.cpp
+        src/FileExplorer/header/ImageOrganizer.h
+        src/Utilities/header/Constants.h
+        src/FileExplorer/header/directoryIterator.h
+        src/FileExplorer/source/directoryIterator.cpp
+        src/FileExplorer/header/makeClusterDirectories.h
+        src/FileExplorer/source/makeClusterDirectories.cpp)
 target_link_libraries(facety stdc++fs)
 
 target_link_libraries(facety dlib::dlib)
