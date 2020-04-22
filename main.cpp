@@ -3,27 +3,14 @@
 #include <unordered_map>
 #include "src/FaceRec/header/faceClustering.h"
 #include "src/FileExplorer/header/ImageOrganizer.h"
-#include "src/Utilities/header/Constants.h"
+#include <QApplication>
+#include "src/QT/mainwindow.h"
 
-int main() {
-    Constants fileConstants = Constants::getInstance();
-    const std::filesystem::path path = fileConstants.images_directory;
-    std::vector<string> images;
-    std::unordered_map<int, std::vector<string>> clusters;
-    try {
-        images = list_all_images(path);
-        cout<<images.size()<<endl;
-        clusters = clustering(images);
-        cout<<"clustered"<<endl;
-
-    }
-    catch (...){
-        cout<<"Caught an exception\n";
-    }
-
-    populateClusters(fileConstants.clusters_directory, clusters);
-
-    return 0;
+int main(int argc, char *argv[]) {
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
 }
 
 /*TODO

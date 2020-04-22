@@ -10,6 +10,13 @@ FetchContent_MakeAvailable(dlib)
 
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_PREFIX_PATH "/Users/anmol/Qt/5.14.2/clang_64/")
+find_package(Qt5Widgets REQUIRED)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
 add_executable(facety
         main.cpp
         src/FileExplorer/source/ImageIterator.cpp
@@ -21,13 +28,17 @@ add_executable(facety
         src/FaceRec/source/faceClustering.cpp
         src/FileExplorer/source/ImageOrganizer.cpp
         src/FileExplorer/header/ImageOrganizer.h
-        src/Utilities/header/Constants.h
         src/FileExplorer/header/directoryIterator.h
         src/FileExplorer/source/directoryIterator.cpp
         src/FileExplorer/header/makeClusterDirectories.h
-        src/FileExplorer/source/makeClusterDirectories.cpp)
+        src/FileExplorer/source/makeClusterDirectories.cpp
+        src/QT/mainwindow.cpp
+        src/QT/mainwindow.h
+        src/QT/mainwindow.ui)
+
 target_link_libraries(facety stdc++fs)
 
 target_link_libraries(facety dlib::dlib)
+target_link_libraries(facety Qt5::Widgets)
 
 #make a cmake file inside another cmake file

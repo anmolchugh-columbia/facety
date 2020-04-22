@@ -7,7 +7,6 @@
 #include <dlib/image_io.h>
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <filesystem>
-#include "../../Utilities/header/Constants.h"
 #include "../../FileExplorer/header/directoryIterator.h"
 #include "../../FileExplorer/header/makeClusterDirectories.h"
 #include <unordered_set>
@@ -75,7 +74,8 @@ std::unordered_map<int, std::vector<string>> getClusters(
         std::vector<matrix<rgb_pixel>>& faces,
         const std::vector<string>& imagePaths,
         int oldFaceStartIndex,
-        std::vector<string>& oldFacePaths
+        std::vector<string>& oldFacePaths,
+        filesystem::path cluster_directory
 );
 
 // ----------------------------------------------------------------------------------------
@@ -83,14 +83,14 @@ std::unordered_map<int, std::vector<string>> getClusters(
 // model1 : "http://dlib.net/files/shape_predictor_5_face_landmarks.dat.bz2"
 // model2 : "http://dlib.net/files/dlib_face_recognition_resnet_model_v1.dat.bz2"
 
-std::unordered_map<int, std::vector<string>> clustering(std::vector<string> imagePaths) try
+std::unordered_map<int, std::vector<string>> clustering(std::vector<string> imagePaths, filesystem::path clusters_directory) try
 {
-
-
-    Constants fileConstants = Constants::getInstance();
-    filesystem::path models = fileConstants.project_directory / "resources/model";
+    filesystem::path project_directory = filesystem::current_path().parent_path();
+    filesystem::path models = project_directory / "resources/model";
     string resources_path_string(models.c_str());
-    filesystem::path path_to_existing_clusters = fileConstants.project_directory / "resources/clusters";
+    filesystem::path path_to_existing_clusters = clusters_directory;
+
+    cout<<"Existing path:"<<path_to_existing_clusters.c_str()<<endl;
 
     std::vector<int> faceID(imagePaths.size(), 0);
     std::vector<matrix<rgb_pixel>> faces;
@@ -107,7 +107,7 @@ std::unordered_map<int, std::vector<string>> clustering(std::vector<string> imag
         return {};
     }
     cout<<"faces detected "<<endl;
-    return getClusters(resources_path_string, faceID, faces, imagePaths,  oldFaceStartIndex, oldFacePaths);
+    return getClusters(resources_path_string, faceID, faces, imagePaths,  oldFaceStartIndex, oldFacePaths, clusters_directory);
 }
 catch (std::exception& e)
 {
@@ -207,7 +207,9 @@ void getFaces(string resources_path_string, std::vector<int>& faceID, std::vecto
 }
 
 // ----------------------------------------------------------------------------------------
-std::unordered_map<int, std::vector<string>> getClusters(string resources_path_string, std::vector<int>& faceID, std::vector<matrix<rgb_pixel>>& faces, const std::vector<string>& imagePaths,  int oldFaceStartIndex, std::vector<string>& oldFacePaths ){
+std::unordered_map<int, std::vector<string>> getClusters(string resources_path_string, std::vector<int>& faceID,
+        std::vector<matrix<rgb_pixel>>& faces, const std::vector<string>& imagePaths,  int oldFaceStartIndex,
+        std::vector<string>& oldFacePaths, filesystem::path clusters_directory){
 
     anet_type net;
     deserialize(resources_path_string + "/dlib_face_recognition_resnet_model_v1.dat") >> net;
@@ -227,7 +229,6 @@ std::unordered_map<int, std::vector<string>> getClusters(string resources_path_s
 
     // Now let's display the face clustering results on the screen.  You will see that it
     // correctly grouped all the faces.
-    Constants fileConstants = Constants::getInstance();
     std::unordered_map<int, std::vector<string>> clusters;
 
     int global_cluster_count = 0;
@@ -236,7 +237,7 @@ std::unordered_map<int, std::vector<string>> getClusters(string resources_path_s
     int oldFaceCurrentIndex = oldFaceStartIndex;
 
     //Lets make some cluster directories
-    createClusterDirectories(fileConstants.clusters_directory, num_clusters);
+    createClusterDirectories(clusters_directory, num_clusters);
 
     // Lets make the clusters for old faces first
     for(size_t i=0; i<oldFacePaths.size(); i++){
@@ -275,9 +276,9 @@ std::unordered_map<int, std::vector<string>> getClusters(string resources_path_s
                     clusters[global_cluster_count].push_back(imagePaths[imageID]);
                     if(!flag) {
                         flag = true;
-                        string relative = "resources/clusters/" + to_string(global_cluster_count) + "/" +
+                        string relative = to_string(global_cluster_count) + "/" +
                                           to_string(global_cluster_count) + ".png";
-                        save_png(faces[j], fileConstants.project_directory / relative);
+                        save_png(faces[j], clusters_directory / relative);
                     }
                 }
             }

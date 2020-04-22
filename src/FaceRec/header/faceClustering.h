@@ -9,7 +9,6 @@
 #include <dlib/image_io.h>
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <filesystem>
-#include "../../Utilities/header/Constants.h"
 #include "../../FileExplorer/header/directoryIterator.h"
 #include <unordered_set>
 #include <chrono>
@@ -18,5 +17,5 @@
 using namespace dlib;
 using namespace std;
 
-std::unordered_map<int, std::vector<string>> clustering(std::vector<string> imagePaths);
+std::unordered_map<int, std::vector<string>> clustering(std::vector<string> imagePaths, filesystem::path clusters_directory);
 #endif //FACETY_FACECLUSTERING_H
