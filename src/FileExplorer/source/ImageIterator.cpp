@@ -5,8 +5,8 @@
 #include "../header/ImageIterator.h"
 #include "../../Utilities/header/ImageUtilities.h"
 
-vector<string> list_all_images(const std::filesystem::path& path) {
-    vector<string> images;
+std::vector<string> list_all_images(const std::filesystem::path& path) {
+    std::vector<string> images;
     for(const auto& p: std::filesystem::recursive_directory_iterator(path)) {
         if (!std::filesystem::is_directory(p)) {
             string extension_string(p.path().extension());

@@ -1,8 +1,3 @@
-#include <iostream>
-#include "src/FileExplorer/header/ImageIterator.h"
-#include <unordered_map>
-#include "src/FaceRec/header/faceClustering.h"
-#include "src/FileExplorer/header/ImageOrganizer.h"
 #include <QApplication>
 #include "src/QT/mainwindow.h"
 
@@ -14,9 +9,9 @@ int main(int argc, char *argv[]) {
 }
 
 /*TODO
+ * test for 11 or more clusters
  * Horizontal images
  * thumbnail as directory icon
- * thumbnail as representation based on confidence score
  * unit tests
  * use case scenario with implementation
  * some quantitative tests

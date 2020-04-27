@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <src/FileExplorer/header/ImageIterator.h>
 #include <src/FileExplorer/header/ImageOrganizer.h>
-#include <src/FaceRec/header/faceClustering.h>
+#include <src/FaceRec/header/Clustering.h>
 
 using namespace std;
 
@@ -45,10 +45,9 @@ void MainWindow::on_pushButton_3_clicked()
     std::unordered_map<int, std::vector<string>> clusters;
     try {
         images = list_all_images(path);
-        cout<<images.size()<<endl;
-        clusters = clustering(images, clusters_directory);
-        cout<<"clustered"<<endl;
-
+        Clustering helper = Clustering(images, clusters_directory);
+        clusters = helper.cluster();
+//        cout<<"clustered"<<endl;
     }
     catch (...){
         cout<<"Caught an exception\n";

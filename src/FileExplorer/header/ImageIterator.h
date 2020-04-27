@@ -13,6 +13,6 @@
 
 using namespace std;
 
-vector<string> list_all_images(const std::filesystem::path& path);
+std::vector<string> list_all_images(const std::filesystem::path& path);
 
 #endif //FACETY_IMAGEITERATOR_H
