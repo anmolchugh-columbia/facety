@@ -43,16 +43,18 @@ void MainWindow::on_pushButton_3_clicked()
     const std::filesystem::path path = images_directory;
     std::vector<string> images;
     std::unordered_map<int, std::vector<string>> clusters;
+    auto start = chrono::high_resolution_clock::now();
     try {
         images = list_all_images(path);
         Clustering helper = Clustering(images, clusters_directory);
         clusters = helper.cluster();
-//        cout<<"clustered"<<endl;
     }
     catch (...){
         cout<<"Caught an exception\n";
     }
-
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout <<"time taken for the experiment : " << duration.count()/1000000 <<" seconds"<< endl;
     populateClusters(clusters_directory, clusters);
     MainWindow::close();
 }

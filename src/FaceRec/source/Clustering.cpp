@@ -101,9 +101,8 @@ std::unordered_map<int, std::vector<string>> Clustering :: getClusters(){
     {
         for (size_t j = i; j < face_descriptors.size(); ++j)
         {
-            if (length(face_descriptors[i]-face_descriptors[j]) < 0.6) {
+            if (length(face_descriptors[i]-face_descriptors[j]) < 0.5) {
                 edges.push_back(sample_pair(i, j));
-                cout<<i<<" "<<j<<endl;
             }
         }
     }
